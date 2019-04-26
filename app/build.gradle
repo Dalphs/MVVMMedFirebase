@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 28
@@ -27,12 +28,13 @@ dependencies {
     // Et andet plus er, at disse klasser kobler automatisk de forskellige activities livecycles,
     // som vi så heller ikke behæver at programmere. Alt i alt er det et stort hjælp.
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
-    
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation 'com.android.support:design:28.0.0'
 
+    implementation 'com.google.firebase:firebase-database:16.1.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

@@ -8,11 +8,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import dk.acsandras.mvvmdemo.R;
 import dk.acsandras.mvvmdemo.view.ViewModel;
 
@@ -20,6 +30,8 @@ public class AndroidView extends AppCompatActivity {
 
     private ViewModel viewModel;
     private TextView textView;
+
+    FirebaseDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +42,26 @@ public class AndroidView extends AppCompatActivity {
 
         // TODO (8) Inflater en textView og en editText, som kommer til at holde vores data
         textView = findViewById(R.id.textViewA);
-        EditText editText = findViewById(R.id.editTextA);
+        final EditText editText = findViewById(R.id.editTextA);
+
+        database = FirebaseDatabase.getInstance();
+        final DatabaseReference myRef = database.getReference("message");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String value = dataSnapshot.getValue().toString();
+                if (!value.equals(textView.getText())){
+                    textView.setText(value);
+                    editText.setText(value);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         // TODO (9) Vi tilføjer en listener, som reagerer på hver gang tekstfeltet ændres
         // Jeg har hentet denne snippet fra nettet
@@ -64,6 +95,9 @@ public class AndroidView extends AppCompatActivity {
             public void onChanged(@Nullable final String a) {
                 // Update the UI, in this case, a TextView.
                 textView.setText(a);
+
+                myRef.setValue(a);
+                System.out.println("ændret");
             }
         };
 
