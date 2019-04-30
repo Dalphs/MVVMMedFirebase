@@ -18,8 +18,9 @@ public class ViewModel extends androidx.lifecycle.ViewModel implements dk.acsand
 
     public ViewModel() {
         model.observe(this);
+        currentA.setValue("");
         // TODO (5) Det her illustrerer, at vi får data fra modellen
-        currentA.setValue(model.getA()); // Giver "Startdata fra Model"
+        // Giver "Startdata fra Model"
         // currentA.setValue("Startdata fra ViewModel");
     }
 
@@ -41,5 +42,9 @@ public class ViewModel extends androidx.lifecycle.ViewModel implements dk.acsand
     public void update(Observable observable) {
         //if (arg == model)
         currentA.setValue(model.getA());
+    }
+
+    public void addObserverForDatabase(dk.acsandras.mvvmdemo.model.Observer observer){
+        model.observe(observer);
     }
 }

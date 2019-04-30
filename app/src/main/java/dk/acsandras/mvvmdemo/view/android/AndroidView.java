@@ -24,14 +24,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import dk.acsandras.mvvmdemo.R;
+import dk.acsandras.mvvmdemo.view.FirebaseHandler;
 import dk.acsandras.mvvmdemo.view.ViewModel;
 
 public class AndroidView extends AppCompatActivity {
 
     private ViewModel viewModel;
     private TextView textView;
-
-    FirebaseDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,28 +39,12 @@ public class AndroidView extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        viewModel = ViewModelProviders.of(this).get(ViewModel.class);
+        FirebaseHandler firebaseHandler = new FirebaseHandler(viewModel);
+
         // TODO (8) Inflater en textView og en editText, som kommer til at holde vores data
         textView = findViewById(R.id.textViewA);
         final EditText editText = findViewById(R.id.editTextA);
-
-        database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference("message");
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String value = dataSnapshot.getValue().toString();
-                if (!value.equals(textView.getText())){
-                    textView.setText(value);
-                    editText.setText(value);
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
 
         // TODO (9) Vi tilføjer en listener, som reagerer på hver gang tekstfeltet ændres
         // Jeg har hentet denne snippet fra nettet
@@ -86,7 +69,6 @@ public class AndroidView extends AppCompatActivity {
         });
 
         // TODO (10) Observing the View Model
-        viewModel = ViewModelProviders.of(this).get(ViewModel.class);
 
 
         // TODO (11) Create the observer which updates the UI.
@@ -95,16 +77,14 @@ public class AndroidView extends AppCompatActivity {
             public void onChanged(@Nullable final String a) {
                 // Update the UI, in this case, a TextView.
                 textView.setText(a);
-
-                myRef.setValue(a);
-                System.out.println("ændret");
+                if (!editText.getText().toString().equals(a))
+                    editText.setText(a);
             }
         };
 
         // TODO (12) Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
         // Delegate assignment of observer to ViewModel
         viewModel.observeA(this, stringObserver);//getA().observe(this, stringObserver);
-
     }
 
     // Det her er bare menuen i app'en, bruges ikke pt.

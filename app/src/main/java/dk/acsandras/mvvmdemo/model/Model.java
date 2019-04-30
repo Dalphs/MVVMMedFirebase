@@ -11,7 +11,6 @@ public class Model implements Observable {
 
     // TODO (3) Lav getters og setters og evt. en constructor for din data
     public Model() {
-        this.setA("Startdata fra modellen");
     }
 
     public String getA() {
